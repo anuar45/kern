@@ -38,11 +38,16 @@ func countLines(f *os.File, count map[string]int) {
 }
 
 func indexFile(f *os.File, lineIndex map[string]string) {
+	fmt.Println("test")
 	input := bufio.NewScanner(f)
+	fmt.Println(input.Scan())
 	for input.Scan() {
+		fmt.Println(3, lineIndex[input.Text()])
 		if !strings.Contains(lineIndex[input.Text()], f.Name()) {
+			fmt.Println(1, f.Name())
+			fmt.Println(2, input.Text())
 			lineIndex[input.Text()] += f.Name()
-
+			fmt.Println(3, lineIndex[input.Text()])
 		}
 	}
 }
