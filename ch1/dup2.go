@@ -34,8 +34,8 @@ func countLines(f *os.File, count map[string]int, lineIndex map[string]string) {
 	input := bufio.NewScanner(f)
 	for input.Scan() {
 		count[input.Text()]++
-		if !strings.Contains(lineIndex[input.Text()], f.Name()) {
-			lineIndex[input.Text()] += filepath.Base(f.Name())
+		if !strings.Contains(lineIndex[input.Text()], filepath.Base(f.Name())) {
+			lineIndex[input.Text()] += filepath.Base(f.Name()) + " "
 		}
 	}
 }
