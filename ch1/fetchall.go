@@ -6,17 +6,29 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
 func main() {
 	start := time.Now()
 	ch := make(chan string)
-	for _, url := range os.Args[1:] {
+	urls := os.Args[1:]
+	if len(urls) == 0 {
+		urlsBytes, err := ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			fmt.Println("Error reading stdin", err)
+		}
+		urls = strings.Split(string(urlsBytes), "\n")
+	}
+	for _, url := range urls {
+		if !strings.HasPrefix(url, "http://") {
+			url = "http://" + url
+		}
 		go fetch(url, ch)
 	}
 
-	for range os.Args[1:] {
+	for range urls {
 		fmt.Println(<-ch)
 	}
 	fmt.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
