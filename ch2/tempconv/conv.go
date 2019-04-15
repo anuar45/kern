@@ -6,7 +6,7 @@ func CToF(c Celsius) Fahrenheit {
 }
 
 // FToC converts Fahrenheit to Celsius
-func CToF(f Fahrenheit) Celsius {
+func FToC(f Fahrenheit) Celsius {
 	return Celsius((f - 32) * 5 / 9)
 }
 
