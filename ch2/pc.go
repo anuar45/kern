@@ -20,4 +20,7 @@ func main() {
 	fmt.Println(popcount.PopCountFor(uint64(a)))
 	fmt.Println(time.Since(start))
 
+	start = time.Now()
+	fmt.Println(popcount.PopCount64(uint64(a)))
+	fmt.Println(time.Since(start))
 }

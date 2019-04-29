@@ -27,3 +27,15 @@ func PopCountFor(x uint64) int {
 	}
 	return sum
 }
+
+func PopCount64(x uint64) int {
+	var sum int
+	var i uint
+	for i = 0; i < 64; i++ {
+		if x&1 == 1 {
+			sum++
+		}
+		x = x >> 1
+	}
+	return sum
+}
