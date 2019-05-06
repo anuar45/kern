@@ -39,3 +39,15 @@ func PopCount64(x uint64) int {
 	}
 	return sum
 }
+
+func PopCountSpec(x uint64) int {
+	var sum int
+	var i uint
+	for i = 0; i < 64; i++ {
+		if x-x&(x-1) == 1 {
+			sum++
+		}
+		x = x >> 1
+	}
+	return sum
+}
