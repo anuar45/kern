@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"math"
 	"net/http"
@@ -11,23 +12,13 @@ type svgParams struct {
 	xyrange float64
 	xyscale float64
 	zscale  float64
-	height  float64
-	width   float64
+	height  int
+	width   int
 	cells   int
 	angle   float64
 	sin30   float64
 	cos30   float64
 }
-
-// var xyrange float 64
-// var xyscale, zscale, height float64
-// var height, width int
-// cells = 100
-// angle = math.Pi / 6
-// var sin30, cos30 = math.Sin(angle), math.Cos(angle)
-// xyrange = 30.0
-// xyscale = float64(width) / 2.0 / xyrange
-// zscale = float64(height) * 0.4
 
 func main() {
 
@@ -38,25 +29,26 @@ func main() {
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	height, _ := strconv.ParseFloat(r.Form["h"][0], 64)
-	width, _ := strconv.ParseFloat(r.Form["w"][0], 64)
+	height, _ := strconv.Atoi(r.Form["h"][0])
+	width, _ := strconv.Atoi(r.Form["w"][0])
 
 	s := newSvgParams(height, width)
 
 	svg := getSvg(s)
+	w.Header().Set("Content-Type", "image/svg+xml")
 	fmt.Fprintf(w, svg)
 }
 
-func newSvgParams(height, width float64) svgParams {
+func newSvgParams(height, width int) svgParams {
 	xyrange := 30.0
-	xyscale := width / 2.0 / xyrange
-	zscale := height * 0.4
+	xyscale := float64(width) / 2.0 / xyrange
+	zscale := float64(height) * 0.4
 	angle := math.Pi / 6
 	sin30 := math.Sin(angle)
 	cos30 := math.Cos(angle)
 
 	s := svgParams{
-		xyrange: 30.0,
+		xyrange: xyrange,
 		xyscale: xyscale,
 		zscale:  zscale,
 		height:  height,
@@ -71,10 +63,11 @@ func newSvgParams(height, width float64) svgParams {
 }
 
 func getSvg(s svgParams) string {
+	var svg bytes.Buffer
 
-	fmt.Printf("<svg xmlns='http://www.w3.org/2000/svg' "+
-		"style='stroke: grey; fill: white; stroke-width: 0.7' "+
-		"width='%d' height='%d'>", s.width, s.height)
+	svg.WriteString(fmt.Sprintf("<svg xmlns='http://www.w3.org/2000/svg' "+
+		"style='stroke: grey; f ill: white; stroke-width: 0.7' "+
+		"width='%d' height='%d'>\n", s.width, s.height))
 
 	for i := 0; i < s.cells; i++ {
 		for j := 0; j < s.cells; j++ {
@@ -82,12 +75,13 @@ func getSvg(s svgParams) string {
 			bx, by := corner(s, i, j)
 			cx, cy := corner(s, i, j+1)
 			dx, dy := corner(s, i+1, j+1)
-			fmt.Printf("<polygon points='%g,%g %g,%g %g,%g %g,%g '/>\n",
-				ax, ay, bx, by, cx, cy, dx, dy)
+			svg.WriteString(fmt.Sprintf("<polygon points='%g,%g %g,%g %g,%g %g,%g '/>\n", ax, ay, bx, by, cx, cy, dx, dy))
 		}
 	}
 
-	fmt.Println("</svg>")
+	svg.WriteString(fmt.Sprintln("</svg>"))
+
+	return svg.String()
 }
 
 func corner(s svgParams, i, j int) (float64, float64) {
@@ -99,8 +93,8 @@ func corner(s svgParams, i, j int) (float64, float64) {
 	z := f(x, y)
 
 	// Project (x,y,z) isometrically onto 2-D SVG canvas (sx, sy).
-	sx := s.width/2 + (x-y)*s.cos30*s.xyscale
-	sy := s.height/2 + (x+y)*s.sin30*s.xyscale - z*s.zscale
+	sx := float64(s.width)/2.0 + (x-y)*s.cos30*s.xyscale
+	sy := float64(s.height)/2.0 + (x+y)*s.sin30*s.xyscale - z*s.zscale
 
 	return sx, sy
 }
