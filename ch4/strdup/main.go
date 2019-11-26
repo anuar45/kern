@@ -9,16 +9,14 @@ func main() {
 }
 
 func strDup(sl []string) []string {
-	i, j := 0, 0
+	i, j := 0, 1
 	for j < len(sl) {
 		if sl[i] != sl[j] {
-			sl[i] = sl[j]
 			i++
-			j++
-		} else {
-			j++
+			sl[i] = sl[j]
 		}
+		j++
 	}
 
-	return sl[:i]
+	return sl[:i+1]
 }

@@ -8,9 +8,17 @@ import (
 func TestStrDup(t *testing.T) {
 	input := []string{
 		"january",
+		"january",
+		"january",
+		"january",
+		"january",
+		"february",
+		"february",
 		"february",
 		"march",
 		"march",
+		"april",
+		"april",
 		"april",
 	}
 
