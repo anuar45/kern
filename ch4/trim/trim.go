@@ -5,10 +5,10 @@ import (
 )
 
 func myTrim(b []byte) []byte {
-	i, j := 0, 1
+	i, j := 0, 0
 
 	for j < len(b) {
-		if !unicode.IsSpace(rune(b[j])) {
+		if !unicode.IsSpace(rune(b[i])) || !unicode.IsSpace(rune(b[j])) {
 			i++
 			b[i] = b[j]
 		}

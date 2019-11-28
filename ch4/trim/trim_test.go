@@ -7,7 +7,7 @@ import (
 
 func TestMyTrim(t *testing.T) {
 	input := []byte("    Hello    World!    ")
-	want := []byte("Hello World!")
+	want := []byte(" Hello World! ")
 	got := myTrim(input)
 
 	if bytes.Compare(got, want) != 0 {
