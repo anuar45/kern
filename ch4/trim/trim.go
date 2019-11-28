@@ -1,22 +1,18 @@
 package trim
 
 import (
-	"encoding/utf8"
-	"fmt"
+	"unicode"
 )
 
 func myTrim(b []byte) []byte {
-	i, j := 0, 0
+	i, j := 0, 1
 
 	for j < len(b) {
-		if utf8.IsSpace(b[i]) {
-
-			if utf8.IsSpace(b[j]) {
-				j++
-				continue
-			}
+		if !unicode.IsSpace(rune(b[j])) {
+			i++
+			b[i] = b[j]
 		}
-		b[i] = b[j]
-		i++
+		j++
 	}
+	return b[:i+1]
 }
