@@ -11,6 +11,7 @@ import (
 
 func main() {
 	counts := make(map[rune]int)
+	chargrp := make(map[string]int)
 	var utflen [utf8.UTFMax + 1]int
 	invalid := 0
 
@@ -28,6 +29,16 @@ func main() {
 			invalid++
 			continue
 		}
+
+		switch {
+		case unicode.IsLetter(r):
+			chargrp["Letters"]++
+		case unicode.IsNumber(r):
+			chargrp["Numbers"]++
+		case unicode.IsPunct(r):
+			chargrp["Special"]++
+		}
+
 		counts[r]++
 		utflen[n]++
 	}
@@ -40,6 +51,10 @@ func main() {
 		if i > 0 {
 			fmt.Printf("%d\t%d\n", i, n)
 		}
+	}
+	fmt.Print("\nchargroup\tcount\n")
+	for g, n := range chargrp {
+		fmt.Printf("%s\t%d\n", g, n)
 	}
 	if invalid > 0 {
 		fmt.Printf("\n%d invalid UTF-8 caharacters\n", invalid)
